@@ -7,7 +7,7 @@ st.set_page_config(page_title="RITHMS CDR Visualizer", page_icon="📊")
 tab1, tab2 = st.tabs(["Vizualize CDR", "Generate CDR"])
 
 with tab1:
-    st.title("CDR Visualizer")
+    st.title("RITHMS CDR Visualizer")
 
     st.set_option("deprecation.showfileUploaderEncoding", False)
 
