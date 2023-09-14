@@ -6,6 +6,7 @@ import random
 import datetime
 import os
 import numpy as np
+import uuid
 
 
 def cdr_view(latitude1, latitude2, longitude1, longitude2):
@@ -93,8 +94,12 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
             "latency": random.uniform(10, 100),
         }
 
+        # Generate a unique identifier using uuid
+        unique_id = str(uuid.uuid4())
+
         # Create a dictionary to hold the CDR fields
         cdr = {
+            "unique_id": unique_id,
             "caller_id": caller_id,
             "caller_imei": caller_imei,
             "callee_id": callee_id,
