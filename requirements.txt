@@ -4,4 +4,7 @@ numpy
 plotly-express
 openpyxl
 elementpath
+xmltodict
+xmljson
+streamlit-extras
 

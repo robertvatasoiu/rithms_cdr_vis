@@ -4,19 +4,10 @@ import pandas as pd
 from api import cdr_view
 import xml.etree.ElementTree as ET
 import json
-
-
-# Function to convert XML to JSON
-def xml_to_json(xml_string):
-    root = ET.fromstring(xml_string)
-    xml_dict = {}
-    for child in root:
-        xml_dict[child.tag] = child.text
-    return json.dumps(xml_dict)
-
+import xmltodict
 
 st.set_page_config(page_title="RITHMS CDR Visualizer", page_icon="📊")
-tab1, tab2 = st.tabs(["Vizualize CDR", "Generate CDR"])
+tab1, tab2, tab3 = st.tabs(["CSV/XSLX", "XML/JSON", "Generate CDR"])
 
 with tab1:
     st.title("RITHMS CDR Visualizer")
@@ -26,50 +17,29 @@ with tab1:
     st.sidebar.subheader("Visualization Settings")
 
     uploaded_file = st.sidebar.file_uploader(
-        label="Upload your CDR file. It can be in .csv, .xlsx, .xml, or .json format",
-        type=["csv", "xlsx", "xml", "json"],
+        label="Upload your CDR file. For this tab, it can be in .csv or .xlsx,  format",
+        type=["csv", "xlsx"],
     )
 
     global df
 
     try:
-        if uploaded_file.type is not None:
-            # User uploaded a JSON file
-            if uploaded_file.type == "json":
-                # User uploaded a JSON file
-                df = pd.read_json(uploaded_file)
-            else:
-                # User uploaded a non-JSON file
-                if uploaded_file.type == "xml":
-                    # Convert XML to JSON
-                    xml_data = uploaded_file.read()
-                    json_data = xml_to_json(xml_data)
-                    df = pd.read_json(json_data)
-                else:
-                    # Handle CSV and XLSX files
-                    try:
-                        df = pd.read_csv(uploaded_file, sep=";")
-                    except Exception:
-                        df = pd.read_excel(uploaded_file)
+        if uploaded_file is not None:
+            try:
+                df = pd.read_csv(uploaded_file, sep=";")
+                st.write(df)
+                st.json(df.to_dict(orient="records"))
+            except Exception:
+                df = pd.read_excel(uploaded_file)
+                st.write(df)
+                st.json(df.to_dict(orient="records"))
 
-            st.write(df)
-            numeric_columns = df.select_dtypes(["float", "int"]).columns.tolist()
-            categorical_columns = df.select_dtypes(["object"]).columns.tolist()
-
-            # Display JSON data
-            st.subheader("JSON Data")
-            # for record in df.to_dict(orient="records"):
-            #     formatted_data = ", ".join(
-            #         [f"{key}: {value}" for key, value in record.items()]
-            #     )
-            #     st.json(formatted_data, expanded=True)
-            st.json(df.to_dict(orient="records"))
     except Exception as e:
         st.write("Please upload a file in the left section of the page.")
 
 
-with tab2:
-    st.title("Please introduce the latitude and longitude of the interest zone.")
+with tab3:
+    st.subheader("Please introduce the latitude and longitude of the interest zone.")
     st.subheader(
         "The values must be float numbers. You should give an interval for each of them. Example of a longitude value: 23.1234"
     )
@@ -90,14 +60,49 @@ with tab2:
     )
     st.write("Introduced interval is: ", latitude1, latitude2)
     print(longitude1, longitude2, latitude1, latitude2)
-    # cdrs = cdr_view(latitude1, latitude2, longitude1, longitude2)
-    # print("Robert", cdrs)
+
     try:
         cdrs = cdr_view(latitude1, latitude2, longitude1, longitude2)
         print(cdrs)
+
     except Exception as e:
         print(e)
         st.write("Please introduce the values for the latitude and longitude!")
 
     if st.button("Generate CDR"):
         st.write(cdrs)
+
+    def download_cdrs():
+        # Convert the dataframe to a JSON object
+        json_cdrs = cdrs.to_json(orient="records")
+
+        # Create a file object to write the JSON data to
+        file = open("./datasets/cdrs.json", "w")
+
+        # Write the JSON data to the file
+        file.write(json_cdrs)
+
+        # Close the file
+        file.close()
+
+    st.button("Download CDRs as JSON", key="download_button", on_click=download_cdrs)
+
+
+with tab2:
+    col1, col2 = st.columns(2)
+    with col1:
+        file1 = st.file_uploader("XML FILE", key=11)
+        try:
+            xml = file1.read()
+            file1_data = json.loads(json.dumps(xmltodict.parse(xml)))
+            st.write(file1_data)
+        except Exception as e:
+            st.error("Please upload an XML file.")
+    with col2:
+        file2 = st.file_uploader("JSON FILE", key=22)
+        try:
+            json_file = file2.read()
+            json_data = json.loads(json_file)
+            st.write(json_data)
+        except Exception as e:
+            st.error("Please upload a JSON file.")
