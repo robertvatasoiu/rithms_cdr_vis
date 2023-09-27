@@ -67,22 +67,6 @@ with tab1:
     except Exception as e:
         st.write("Please upload a file in the left section of the page.")
 
-    # chart_select = st.sidebar.selectbox(
-    #     label="Select the chart type",
-    #     options=["Scatter Plot", "Lineplots", "BoxPlot", "Histogram"],
-    # )
-
-    # if chart_select == "Scatter Plot":
-    #     st.sidebar.subheader("Scatter Plot Settings")
-    #     try:
-    #         x_values = st.sidebar.selectbox("X axis", options=numeric_columns)
-    #         y_values = st.sidebar.selectbox("Y axis", options=numeric_columns)
-    #         plot = px.scatter(data_frame=df, x=x_values, y=y_values)
-    #         # display the chart
-    #         st.plotly_chart(plot)
-    #     except Exception as e:
-    #         print(e)
-    #         # st.write("Please upload a file")
 
 with tab2:
     st.title("Please introduce the latitude and longitude of the interest zone.")
