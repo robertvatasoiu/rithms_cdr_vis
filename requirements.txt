@@ -7,4 +7,6 @@ elementpath
 xmltodict
 xmljson
 streamlit-extras
-
+plotly-express
+leafmap
+folium==0.13.0

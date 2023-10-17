@@ -5,6 +5,7 @@ from api import cdr_view
 import xml.etree.ElementTree as ET
 import json
 import xmltodict
+import leafmap.foliumap as leafmap
 
 st.set_page_config(page_title="RITHMS CDR Visualizer", page_icon="📊")
 tab1, tab2, tab3 = st.tabs(["CSV/XSLX", "XML/JSON", "Generate CDR"])
@@ -39,8 +40,22 @@ with tab1:
 
 
 with tab3:
-    st.subheader("Please introduce the latitude and longitude of the interest zone.")
-    st.subheader(
+    ## add the map functionality
+    st.write(
+        "Please select the interest zone by drawing a rectangle on the map. After that, select the rectangle to show the coordinates"
+    )
+    tiles = None
+    height = 800
+    m = leafmap.Map()
+
+    if tiles is not None:
+        for tile in tiles:
+            m.add_xyz_service(tile)
+
+    m.to_streamlit(height=height)
+
+    st.write("Please introduce the latitude and longitude of the interest zone.")
+    st.write(
         "The values must be float numbers. You should give an interval for each of them. Example of a longitude value: 23.1234"
     )
     st.subheader("Longitude")
