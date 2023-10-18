@@ -6,9 +6,13 @@ import xml.etree.ElementTree as ET
 import json
 import xmltodict
 import leafmap.foliumap as leafmap
+import folium
+from folium.plugins import Draw
+from streamlit_folium import st_folium
+
 
 st.set_page_config(page_title="RITHMS CDR Visualizer", page_icon="📊")
-tab1, tab2, tab3 = st.tabs(["CSV/XSLX", "XML/JSON", "Generate CDR"])
+tab1, tab2, tab3, tab4 = st.tabs(["CSV/XSLX", "XML/JSON", "Generate CDR", "MAP"])
 
 with tab1:
     st.title("RITHMS CDR Visualizer")
@@ -41,18 +45,13 @@ with tab1:
 
 with tab3:
     ## add the map functionality
+    m = leafmap.Map()
+    m.to_streamlit(height=400)
+    Draw(export=True).add_to(m)
+
     st.write(
         "Please select the interest zone by drawing a rectangle on the map. After that, select the rectangle to show the coordinates"
     )
-    tiles = None
-    height = 800
-    m = leafmap.Map()
-
-    if tiles is not None:
-        for tile in tiles:
-            m.add_xyz_service(tile)
-
-    m.to_streamlit(height=height)
 
     st.write("Please introduce the latitude and longitude of the interest zone.")
     st.write(
@@ -121,3 +120,20 @@ with tab2:
             st.write(json_data)
         except Exception as e:
             st.error("Please upload a JSON file.")
+
+with tab4:
+    c1, c2 = st.columns(2)
+    with c1:
+        m = folium.Map(location=[46.087035, 25.115833], zoom_start=5, key="map")
+        Draw(export=True).add_to(m)
+        output = st_folium(m, width=600, height=600)
+
+    with c2:
+        st.write(output)
+        print(output)
+        try:
+            print(output["last_active_drawing"])
+            print("111111")
+            print(output["last_active_drawing"]["geometry"]["coordinates"])
+        except Exception as e:
+            print(e)
