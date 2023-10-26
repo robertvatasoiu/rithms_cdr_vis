@@ -43,20 +43,15 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
     for index, row in df.iterrows():
         cell_dict[row["cell"]] = (row["lon"], row["lat"])
 
-    caller_ids = {
-        "+40734657481": "123456789012345",
-        "+40734657491": "234567890123456",
-        "+40734657381": "345678901234567",
-        "+40734653481": "456789012345678",
-    }
+    def generate_phone_number():
+        # Generate a random 10-digit phone number starting with "+4073"
+        phone_number = "+4073" + "".join(random.choice("0123456789") for _ in range(6))
+        return phone_number
 
-    # Define list of possible callee IDs and corresponding IMEIs
-    callee_ids = {
-        "+40734653381": "567890123456789",
-        "+40732657481": "678901234567890",
-        "+40734653481": "789012345678901",
-        "+40734657421": "890123456789012",
-    }
+    def generate_imei_number():
+        # Generate a random 15-digit IMEI number
+        imei = "".join(random.choice("0123456789") for _ in range(15))
+        return imei
 
     # Define list of possible cell IDs
     cell_ids = cell_ids_cdr
@@ -67,12 +62,20 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
 
     # Define list to hold CDRs
     cdrs = []
+    caller_callee_pairs = []
+
+    # Generate and store a pool of caller-callee pairs
+    for i in range(100):  # You can adjust the number of pairs as needed
+        caller_id = generate_phone_number()
+        callee_id = generate_phone_number()
+        caller_callee_pairs.append((caller_id, callee_id))
 
     # Generate 100 random CDRs
-    for i in range(100):
+    for i in range(1000):
         # Generate random values for CDR fields
-        caller_id, caller_imei = random.choice(list(caller_ids.items()))
-        callee_id, callee_imei = random.choice(list(callee_ids.items()))
+        caller_id, caller_imei = generate_phone_number(), generate_imei_number()
+        callee_id, callee_imei = generate_phone_number(), generate_imei_number()
+
         call_start_time = datetime.datetime.now() - datetime.timedelta(
             minutes=random.randint(1, 60)
         )
@@ -128,5 +131,5 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
             for key, value in cdr.items():
                 if isinstance(value, np.int64):
                     cdr[key] = int(value)
-    # return JsonResponse({"cdrs": cdrs})
+
     return pd.DataFrame(cdrs)
