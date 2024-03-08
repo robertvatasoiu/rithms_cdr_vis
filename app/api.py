@@ -28,6 +28,7 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
         "updated",
         "averageSignal",
     ]
+    date_sintetice = pd.read_csv("utils/date_sintetice.csv")
 
     df = ro[
         (ro["lat"] >= latitude1)
@@ -99,7 +100,11 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
 
         # Generate a unique identifier using uuid
         unique_id = str(uuid.uuid4())
-
+        sms_in = random.choice(date_sintetice["smsin"])
+        sms_out = random.choice(date_sintetice["smsout"])
+        call_in = random.choice(date_sintetice["callin"])
+        call_out = random.choice(date_sintetice["callout"])
+        internet = random.choice(date_sintetice["internet"])
         # Create a dictionary to hold the CDR fields
         cdr = {
             "unique_id": unique_id,
@@ -109,20 +114,22 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
             "callee_imei": callee_imei,
             "call_start_time": call_start_time,
             "call_end_time": call_end_time,
-            "call_duration": call_duration,
             "call_type": call_type,
-            "call_result": call_result,
+            # "call_result": call_result,
             "cell_id": cell_id,
             "imei": callee_imei,
             "imsi": imsi,
             "direction": "incoming" if call_type == "inbound" else "outgoing",
-            "longitudine": longitudine_cdr,
-            "latitudine": latitudine_cdr,
             "service_type": "voice",
-            "billing_info": "Unknown",
+            # "billing_info": "Unknown",
             "jitter": qos_metrics["jitter"],
             "packet_loss": qos_metrics["packet_loss"],
             "latency": qos_metrics["latency"],
+            "sms_in": sms_in,
+            "sms_out": sms_out,
+            "call_in": call_in,
+            "call_out": call_out,
+            "internet": internet,
         }
 
         # Add the CDR to the list of CDRs

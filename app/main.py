@@ -32,7 +32,7 @@ with tab1:
     try:
         if uploaded_file is not None:
             try:
-                df = pd.read_csv(uploaded_file, sep=";")
+                df = pd.read_csv(uploaded_file, sep=",")
                 st.write(df)
                 st.json(df.to_dict(orient="records"))
             except Exception:
@@ -51,8 +51,21 @@ with tab3:
         st.session_state.map_key = str(time.time())
 
     m = folium.Map(
-        location=[46.087035, 25.115833], zoom_start=5, key=st.session_state.map_key
+        location=[46.087035, 25.115833],
+        zoom_start=6,
+        key=st.session_state.map_key,
     )
+
+    # tile = folium.TileLayer(
+    #     tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    #     attr="Esri",
+    #     name="Esri Satellite",
+    #     overlay=False,
+    #     control=True,
+    # ).add_to(m)
+    cucuteni = folium.Marker([46.94835, 26.65668], popup="Cucuteni").add_to(m)
+    turcoaia = folium.Marker([45.14311, 28.19508], popup="Turcoaia").add_to(m)
+
     Draw(export=True).add_to(m)
     output = st_folium(m, width=900, height=600, key=st.session_state.map_key + "b")
 
