@@ -28,7 +28,7 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
         "updated",
         "averageSignal",
     ]
-    date_sintetice = pd.read_csv("utils/date_sintetice.csv")
+    date_sintetice = pd.read_csv("utils/date_sintetice_noi_v1.csv")
 
     df = ro[
         (ro["lat"] >= latitude1)
@@ -71,40 +71,30 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
         callee_id = generate_phone_number()
         caller_callee_pairs.append((caller_id, callee_id))
 
-    # Generate 100 random CDRs
-    for i in range(1000):
+    # Generate 2000 random CDRs
+    for i in range(2000):
         # Generate random values for CDR fields
-        caller_id, caller_imei = generate_phone_number(), generate_imei_number()
+        caller_imei = generate_imei_number()
         callee_id, callee_imei = generate_phone_number(), generate_imei_number()
 
-        call_start_time = datetime.datetime.now() - datetime.timedelta(
-            minutes=random.randint(1, 60)
-        )
-        call_end_time = call_start_time + datetime.timedelta(
-            minutes=random.randint(1, 10)
-        )
-        call_duration = (call_end_time - call_start_time).total_seconds()
+        caller_id = date_sintetice["apelant"][i]
+
+        call_start_time = date_sintetice["datetime"][i]
+        call_end_time = date_sintetice["ora sfarsit"][i]
+        call_duration = date_sintetice["secunde"][i]
         call_type = random.choice(["inbound", "outbound"])
-        call_result = random.choice(["answered", "busy", "no answer", "failed"])
+        call_result = random.choice(["answered"])
 
         # This needs to be changed.
         cell_id = random.choice(cell_ids)
-        imsi = "".join(random.choice("0123456789") for i in range(15))
+        caller_imsi = "".join(random.choice("0123456789") for i in range(15))
+        callee_imsi = "".join(random.choice("0123456789") for i in range(15))
         longitudine_cdr = cell_dict[cell_id][0]
         latitudine_cdr = cell_dict[cell_id][1]
-        qos_metrics = {
-            "jitter": random.uniform(0.1, 1),
-            "packet_loss": random.uniform(0, 5),
-            "latency": random.uniform(10, 100),
-        }
 
         # Generate a unique identifier using uuid
         unique_id = str(uuid.uuid4())
-        sms_in = random.choice(date_sintetice["smsin"])
-        sms_out = random.choice(date_sintetice["smsout"])
-        call_in = random.choice(date_sintetice["callin"])
-        call_out = random.choice(date_sintetice["callout"])
-        internet = random.choice(date_sintetice["internet"])
+
         # Create a dictionary to hold the CDR fields
         cdr = {
             "unique_id": unique_id,
@@ -114,22 +104,16 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
             "callee_imei": callee_imei,
             "call_start_time": call_start_time,
             "call_end_time": call_end_time,
+            "call_duration": call_duration,
             "call_type": call_type,
-            # "call_result": call_result,
+            "call_result": call_result,
             "cell_id": cell_id,
-            "imei": callee_imei,
-            "imsi": imsi,
-            "direction": "incoming" if call_type == "inbound" else "outgoing",
+            "caller_imsi": caller_imsi,
+            "callee_imsi": callee_imsi,
+            # "direction": "incoming" if call_type == "inbound" else "outgoing",
             "service_type": "voice",
-            # "billing_info": "Unknown",
-            "jitter": qos_metrics["jitter"],
-            "packet_loss": qos_metrics["packet_loss"],
-            "latency": qos_metrics["latency"],
-            "sms_in": sms_in,
-            "sms_out": sms_out,
-            "call_in": call_in,
-            "call_out": call_out,
-            "internet": internet,
+            "longitudine": longitudine_cdr,
+            "latitudine": latitudine_cdr,
         }
 
         # Add the CDR to the list of CDRs

@@ -63,6 +63,7 @@ with tab3:
     #     overlay=False,
     #     control=True,
     # ).add_to(m)
+    ghelaiesti = folium.Marker([46.565577, 26.394196], popup="Ghelaiesti").add_to(m)
     cucuteni = folium.Marker([46.94835, 26.65668], popup="Cucuteni").add_to(m)
     turcoaia = folium.Marker([45.14311, 28.19508], popup="Turcoaia").add_to(m)
 
@@ -107,7 +108,7 @@ with tab3:
 
         # Create a file object to write the JSON data to
         file = open("./datasets/cdrs.json", "w")
-
+        cdrs.to_csv("./datasets/synthetic_cdr.csv", index=False)
         # Write the JSON data to the file
         file.write(json_cdrs)
 
