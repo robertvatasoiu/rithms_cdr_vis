@@ -56,13 +56,6 @@ with tab3:
         key=st.session_state.map_key,
     )
 
-    # tile = folium.TileLayer(
-    #     tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    #     attr="Esri",
-    #     name="Esri Satellite",
-    #     overlay=False,
-    #     control=True,
-    # ).add_to(m)
     ghelaiesti = folium.Marker([46.565577, 26.394196], popup="Ghelaiesti").add_to(m)
     cucuteni = folium.Marker([46.94835, 26.65668], popup="Cucuteni").add_to(m)
     turcoaia = folium.Marker([45.14311, 28.19508], popup="Turcoaia").add_to(m)
