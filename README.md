@@ -3,8 +3,7 @@
 This is a Streamlit-based web application for visualizing Call Detail Records (CDRs) and generating CDRs based on latitude and longitude intervals. The app provides two main functionalities:
 
 1. **Visualize CDR Data**:
-   - Users can upload their CDR data in either CSV or Excel format.
-   - The app allows users to select different chart types (e.g., Scatter Plot, Lineplots, BoxPlot, Histogram) to visualize their CDR data.
+   - Users can upload their CDR data in either CSV, XML or Excel format.
 
 2. **Generate CDRs**:
    - Users can input latitude and longitude intervals to specify the location of a cell tower.
