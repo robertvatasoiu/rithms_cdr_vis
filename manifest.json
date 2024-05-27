@@ -1,0 +1,31 @@
+{
+   "manifest_version":4,
+   "tool_id":"mobile_data_collector",
+   "tool_requires_credentials":true,
+   "tool_technology_for_scraping":"CDR Generator",
+   "tool_output_data_types":"JSON",
+   "tool_data_encoding":"UTF-8",
+   "datasource_id":"mobile_network_data",
+   "description":"This tool collects and processes mobile network data either by uploading a CDR file or using a CDR generator for network analysis and monitoring.",
+   "obj_uuid_prefix":"MOBNET_",
+   "target_description":"Collects data directly from uploaded CDR records or from CDR generator without specific target URLs.",
+   "name":"Mobile Network Data Collector",
+   "country_region":"global",
+   "languages":[
+      "English"
+   ],
+   "scope":"Collects and analyzes mobile network communications data for art crime.",
+   "scraper_runtime_minutes":5,
+   "version_number":1,
+   "version_name_str":"1.0 release - 2024-05-24",
+   "result_file":"cdr.json",
+   "last_run_datetime_utc":"2024-05-24T12:00:00.000Z",
+   "last_run_date_utc":"2024-05-24",
+   "result_size_bytes":913408,
+   "result_number_nodes":2000,
+   "result_estimated_data_records_per_minute":400,
+   "result_one_data_record_size_bytes":456,
+   "ram_estimate_max_megabytes":2048,
+   "tool_license_info":"GPLv3",
+   "tool_author_info":"Developed by BEIA for use in network analysis and performance monitoring"
+}
