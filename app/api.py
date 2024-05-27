@@ -10,6 +10,20 @@ import uuid
 
 
 def cdr_view(latitude1, latitude2, longitude1, longitude2):
+    """
+    Generate CDRs (Call Detail Records) based on the given latitude and longitude ranges.
+
+    Parameters:
+    latitude1 (float): The starting latitude range.
+    latitude2 (float): The ending latitude range.
+    longitude1 (float): The starting longitude range.
+    longitude2 (float): The ending longitude range.
+
+    Returns:
+    pandas.DataFrame: A DataFrame containing the generated CDRs.
+
+    """
+
     print(os.getcwd())
     ro = pd.read_csv("utils/Romania.csv")
     ro.columns = [
