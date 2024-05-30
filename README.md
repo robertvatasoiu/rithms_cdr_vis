@@ -8,7 +8,15 @@ This is a Streamlit-based web application for visualizing Call Detail Records (C
 2. **Generate CDRs**:
    - Users can input latitude and longitude intervals to specify the location of a cell tower.
    - After inputting valid latitude and longitude values, users can click the "Generate CDR" button to simulate and display CDR data for that cell tower location.
-  
+
+## Input files location
+
+The files to be used in the application are placed in the "utils" folder.
+
+## Output file location
+
+The output CDR JSON file is saved in the "datasets" folder
+
 ## Getting Started
 
 Follow these steps to run the Streamlit app:
