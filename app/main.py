@@ -60,7 +60,14 @@ with tab3:
     cucuteni = folium.Marker([46.94835, 26.65668], popup="Cucuteni").add_to(m)
     turcoaia = folium.Marker([45.14311, 28.19508], popup="Turcoaia").add_to(m)
 
-    Draw(export=True).add_to(m)
+    Draw(export=True, draw_options={
+        'polyline': False,
+        'polygon': False,
+        'circle': False,
+        'marker': False,
+        'circlemarker': False,
+        'rectangle': True,
+    }).add_to(m)
     output = st_folium(m, width=900, height=600, key=st.session_state.map_key + "b")
 
     if st.button("Reload Map", key="reload"):
