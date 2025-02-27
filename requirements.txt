@@ -13,4 +13,5 @@ folium==0.13.0
 streamlit-folium==0.15.0
 branca==0.3.1
 ydata-synthetic
+whiteboxgui
 

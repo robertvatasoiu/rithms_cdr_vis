@@ -10,6 +10,7 @@ import folium
 from folium.plugins import Draw
 from streamlit_folium import st_folium
 import time
+import requests
 
 
 st.set_page_config(page_title="RITHMS CDR Visualizer", page_icon="📊", layout="wide")
@@ -93,6 +94,8 @@ with tab3:
 
     try:
         cdrs = cdr_view(latitude1, latitude2, longitude1, longitude2)
+
+        json_cdrs = cdrs.to_json(orient="records") 
         print(cdrs)
 
     except Exception as e:
@@ -116,6 +119,50 @@ with tab3:
         file.close()
 
     st.button("Download CDRs as JSON", key="download_button", on_click=download_cdrs)
+
+
+
+    test = {
+            "caller_id": "+40734657481",
+            "caller_imei": "123456789012345",
+            "callee_id": "+40734653481",
+            "callee_imei": "789012345678901",
+            "call_start_time": "2023-04-24 06:50:28",
+            "call_end_time": "2023-04-24 06:57:28",
+            "call_duration": "420",
+            "call_type": "outbound",
+            "call_result": "busy",
+            "cell_id": "1125239",
+            "imei": "789012345678901",
+            "imsi": "154451698212861",
+            "direction": "outgoing",
+            "longitude": "28.0556488",
+            "latitude": "45.44700623",
+            "service_type": "voice",
+            "billing_info": "Unknown",
+            "jitter": "0.691875126",
+            "packet_loss": "0.983313834",
+            "latency": "31.07935221"
+        }
+        
+    def send_cdrs_to_platform():
+        try:
+            json_cdrs = cdrs.to_json(orient="records")
+            response = requests.post(
+                'http://platform.rithms.test:30070/ingest/json/call-data-record/single',
+                headers = {
+                'accept': '*/*',
+                'Content-Type': 'application/json'},
+                json=test
+            )
+            if response.status_code == 200:
+                print(f"CDRs successfully sent to platform! Status code: {response.status_code}")
+            else:
+                print(f"Failed to send CDRs. Status code: {response.status_code}, Response: {response.text}")
+        except Exception as e:
+            print(f"Error sending CDRs to platform: {str(e)}")
+    
+    st.button("Send CDRs to Platform", key="send_cdr_button", on_click=send_cdrs_to_platform)
 
 
 with tab2:
