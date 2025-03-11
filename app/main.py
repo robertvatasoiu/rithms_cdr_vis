@@ -94,8 +94,6 @@ with tab3:
 
     try:
         cdrs = cdr_view(latitude1, latitude2, longitude1, longitude2)
-
-        json_cdrs = cdrs.to_json(orient="records") 
         print(cdrs)
 
     except Exception as e:
@@ -120,49 +118,62 @@ with tab3:
 
     st.button("Download CDRs as JSON", key="download_button", on_click=download_cdrs)
 
+    def convert_to_string(data):
+        """Recursively convert all values in a dictionary to strings."""
+        if isinstance(data, dict):
+            return {key: convert_to_string(value) for key, value in data.items()}
+        elif isinstance(data, list):
+            return [convert_to_string(item) for item in data]
+        elif isinstance(data, (int, float)):
+             return str(data)
+        else:
+            return data
+    #Use a callback to prevent the rerun
+    def send_cdrs_to_platform_callback():
+        #Access cdrs from session_state instead from the outer scope of the button
+        if "cdrs" in st.session_state:
+            try:
+                cdrs = st.session_state.cdrs
+                json_cdrs = cdrs.to_dict(orient="records")
 
+                # Convert all values to strings
+                stringified_cdrs = convert_to_string(json_cdrs)
+                
+                #Change the endpoint to multiple
+                response = requests.post(
+                    'http://platform.rithms.test:30070/ingest/json/call-data-record/multiple',
+                    headers = {
+                    'accept': '*/*',
+                    'Content-Type': 'application/json'},
+                    #Send all the cdrs
+                    json=stringified_cdrs
+                )
+                if response.status_code == 201:
+                    st.session_state.send_cdrs_message = f"CDRs successfully sent to platform! Status code: {response.status_code}"
+                    
+                else:
+                    st.session_state.send_cdrs_message = f"Failed to send CDRs. Status code: {response.status_code}, Response: {response.text}"
+            except Exception as e:
+                st.session_state.send_cdrs_message = f"Error sending CDRs to platform: {str(e)}"
+        else:
+            st.session_state.send_cdrs_message = "No CDRs available to send. Please generate CDRs first."
 
-    test = {
-            "caller_id": "+40734657481",
-            "caller_imei": "123456789012345",
-            "callee_id": "+40734653481",
-            "callee_imei": "789012345678901",
-            "call_start_time": "2023-04-24 06:50:28",
-            "call_end_time": "2023-04-24 06:57:28",
-            "call_duration": "420",
-            "call_type": "outbound",
-            "call_result": "busy",
-            "cell_id": "1125239",
-            "imei": "789012345678901",
-            "imsi": "154451698212861",
-            "direction": "outgoing",
-            "longitude": "28.0556488",
-            "latitude": "45.44700623",
-            "service_type": "voice",
-            "billing_info": "Unknown",
-            "jitter": "0.691875126",
-            "packet_loss": "0.983313834",
-            "latency": "31.07935221"
-        }
-        
-    def send_cdrs_to_platform():
-        try:
-            json_cdrs = cdrs.to_json(orient="records")
-            response = requests.post(
-                'http://platform.rithms.test:30070/ingest/json/call-data-record/single',
-                headers = {
-                'accept': '*/*',
-                'Content-Type': 'application/json'},
-                json=test
-            )
-            if response.status_code == 200:
-                print(f"CDRs successfully sent to platform! Status code: {response.status_code}")
-            else:
-                print(f"Failed to send CDRs. Status code: {response.status_code}, Response: {response.text}")
-        except Exception as e:
-            print(f"Error sending CDRs to platform: {str(e)}")
+    # Initialize message in session state if it does not exist
+    if "send_cdrs_message" not in st.session_state:
+        st.session_state.send_cdrs_message = ""
+    if "cdrs" not in st.session_state:
+        st.session_state.cdrs = None
+
+    # Store the `cdrs` in session state after generation
+    try:
+      if cdrs is not None:
+        st.session_state.cdrs = cdrs
+    except:
+      pass
     
-    st.button("Send CDRs to Platform", key="send_cdr_button", on_click=send_cdrs_to_platform)
+    st.button("Send CDRs to Platform", key="send_cdr_button", on_click=send_cdrs_to_platform_callback)
+    # Display message in the page
+    st.write(st.session_state.send_cdrs_message)
 
 
 with tab2:
