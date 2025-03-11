@@ -149,7 +149,7 @@ with tab3:
                     json=stringified_cdrs
                 )
                 if response.status_code == 201:
-                    st.session_state.send_cdrs_message = f"CDRs successfully sent to platform! Status code: {response.status_code}"
+                    st.session_state.send_cdrs_message = f"CDRs successfully sent to platform!"
                     
                 else:
                     st.session_state.send_cdrs_message = f"Failed to send CDRs. Status code: {response.status_code}, Response: {response.text}"
