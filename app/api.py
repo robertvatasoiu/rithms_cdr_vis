@@ -86,7 +86,7 @@ def cdr_view(latitude1, latitude2, longitude1, longitude2):
         caller_callee_pairs.append((caller_id, callee_id))
 
     # Generate 2000 random CDRs
-    for i in range(2000):
+    for i in range(100):
         # Generate random values for CDR fields
         caller_imei = generate_imei_number()
         callee_id, callee_imei = generate_phone_number(), generate_imei_number()
